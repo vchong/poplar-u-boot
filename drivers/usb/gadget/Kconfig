@@ -57,6 +57,11 @@ config USB_GADGET_DWC2_OTG
 	  driver to operate in Peripheral mode. This option requires
 	  USB_GADGET to be enabled.
 
+config USB_GADGET_POPLAR
+	bool "Poplar USB device driver"
+	help
+	  Enable the Poplar USB device driver to support the fastboot module.
+
 if USB_GADGET_DWC2_OTG
 
 config USB_GADGET_DWC2_OTG_PHY_BUS_WIDTH_8

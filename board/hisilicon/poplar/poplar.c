@@ -13,6 +13,15 @@
 #include <asm/arch/hi3798cv200.h>
 #include <asm/arch/dwmmc.h>
 #include <asm/armv8/mmu.h>
+#ifdef CONFIG_USB_GADGET_POPLAR
+
+#include <usb.h>
+#include <usb/dwc2_udc.h>
+#include <g_dnl.h>
+#include <linux/usb/ch9.h>
+#include <linux/usb/gadget.h>
+
+#endif
 
 DECLARE_GLOBAL_DATA_PTR;
 
@@ -185,6 +194,28 @@ int board_mmc_init(bd_t *bis)
 	return ret;
 }
 
+#ifdef CONFIG_USB_GADGET_POPLAR
+extern int poplar_udc_probe(struct dwc2_plat_otg_data *pdata);
+static struct dwc2_plat_otg_data poplar_otg_data = {
+	.regs_otg	= HIOTG_BASE_ADDR
+};
+
+static void set_usb_to_device(void)
+{
+    //Set usb2.0 in device mode
+    setbits_le32(PERI_CTRL_USB3, USB2_2P_CHIPID);
+}
+
+int board_usb_init(int index, enum usb_init_type init)
+{
+    int retval;
+    set_usb_to_device();
+    retval = poplar_udc_probe(&poplar_otg_data);
+    usb2_phy_init();
+	return retval;
+}
+
+#endif
 int board_init(void)
 {
 	usb2_phy_init();
