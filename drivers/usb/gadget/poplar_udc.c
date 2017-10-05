@@ -316,7 +316,7 @@ void hiusb_write_empty_tx_fifo( uint32_t epnum)
 
 	/* While there is space in the queue and space in the FIFO and
 	 * More data to tranfer, Write packets to the Tx FIFO */
-	txstatus.d32 = readl((uint32_t volatile *)(REG_DTXFSTS0 + epnum*0x20));
+	txstatus.d32 = readl(a32_to_ptr(REG_DTXFSTS0 + epnum * 0x20));
 
 	while (ep->xfer_count < ep->xfer_len &&
 	       txstatus.b.txfspcavail > dwords &&ep->xfer_len != 0) {
@@ -338,7 +338,7 @@ void hiusb_write_empty_tx_fifo( uint32_t epnum)
 		ep->xfer_buff += byte_count;
 		len = ep->xfer_len - ep->xfer_count;
 		dwords = (len + 3) / 4;
-		txstatus.d32 = readl((uint32_t volatile *)(REG_DTXFSTS0 + epnum*0x20));
+		txstatus.d32 = readl(a32_to_ptr(REG_DTXFSTS0 + epnum * 0x20));
 	}
 }
 
