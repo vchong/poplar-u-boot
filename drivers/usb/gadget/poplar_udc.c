@@ -133,9 +133,9 @@ static int do_set_interface(void)
 	rx_req->complete = 0;
 	cmdbuf = rx_req->buf;
 
-    usb_req = calloc(1,sizeof(struct usb_request));
-    if(!usb_req)
-        return -1;
+	usb_req = calloc(1,sizeof(struct usb_request));
+	if(!usb_req)
+		return -1;
 	return rc;
 }
 
