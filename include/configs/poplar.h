@@ -14,6 +14,14 @@
 
 #include <linux/sizes.h>
 
+/*
+ * Explicitly convert between a pointer and an integral 32-bit address.
+ * This will narrow the pointer and relies on u-boot running below the
+ * 32-bit boundary.
+ */
+#define ptr_to_a32(p)	((uint32_t)(uint64_t)(p))
+#define a32_to_ptr(a32)	((void *)(uint64_t)(a32))
+
 /* DRAM banks */
 #define CONFIG_NR_DRAM_BANKS			2
 

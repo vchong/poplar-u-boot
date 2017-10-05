@@ -35,13 +35,6 @@ static int mac_iobase[MAX_PORT_NUM] = {
 				(unsigned long)(d) + sizeof(*(d)))
 #define invalidate_cache(p, l) invalidate_dcache_range((p), (p) + (l))
 
-/*
- * This will narrow the pointer and relies on u-boot running below the
- * 32-bit boundary.
- */
-#define ptr_to_dma32(p) ((uint32_t)(uint64_t)(p))
-#define dma32_to_ptr(da) ((void *)(uint64_t)(da))
-
 /* suppose higmac_board_info[i] was initialed! */
 #define for_each_gmac_netdev_local_priv(ld, i)  \
 	for (i = 0; i < CONFIG_GMAC_NUMS &&     \
@@ -521,7 +514,7 @@ static int higmac_recv(struct eth_device *dev)
 			break;
 
 		rx_fq_desc = ld->rx_fq_addr + (rx_fq_wr_offset >> DESC_BYTE_SHIFT);
-		rx_fq_desc->data_buff_addr = ptr_to_dma32(buf);
+		rx_fq_desc->data_buff_addr = ptr_to_a32(buf);
 		invalidate_cache(rx_fq_desc->data_buff_addr, HIETH_MAX_FRAME_SIZE);
 
 		rx_fq_desc->descvid = DESC_VLD_FREE;
@@ -563,7 +556,7 @@ static int higmac_recv(struct eth_device *dev)
 	if (HIGMAC_INVALID_RXPKG_LEN(len)) {
 		higmac_writel_bits(ld, rx_bq_rd_offset, RX_BQ_RD_ADDR, BITS_RX_BQ_RD_ADDR);
 		if (rx_bq_desc->data_buff_addr)
-			free(dma32_to_ptr(rx_bq_desc->data_buff_addr));
+			free(a32_to_ptr(rx_bq_desc->data_buff_addr));
 
 		if (gmac_debug)
 			printf("invalid rx len %d\n", len);
@@ -580,8 +573,8 @@ static int higmac_recv(struct eth_device *dev)
 	 */
 	invalidate_cache(rx_bq_desc->data_buff_addr, len);
 	memcpy((void *)net_rx_packets[0],
-	       dma32_to_ptr(rx_bq_desc->data_buff_addr), len);
-	free(dma32_to_ptr(rx_bq_desc->data_buff_addr));
+	       a32_to_ptr(rx_bq_desc->data_buff_addr), len);
+	free(a32_to_ptr(rx_bq_desc->data_buff_addr));
 
 	higmac_writel_bits(ld, rx_bq_rd_offset, RX_BQ_RD_ADDR, BITS_RX_BQ_RD_ADDR);
 
@@ -622,7 +615,7 @@ static int higmac_send(struct eth_device *dev, void *packet, int length)
 	tso_ver = higmac_readl_bits(ld, CRF_MIN_PACKET, BIT_TSO_VERSION);
 
 	tx_bq_desc += (tx_bq_wr_offset >> DESC_BYTE_SHIFT);
-	tx_bq_desc->data_buff_addr = ptr_to_dma32(packet);
+	tx_bq_desc->data_buff_addr = ptr_to_a32(packet);
 	tx_bq_desc->descvid = DESC_VLD_BUSY;
 
 	if (tso_ver) {
