@@ -145,6 +145,7 @@ static int display_text_info(void)
 
 static int announce_dram_init(void)
 {
+	printf("\n%s:%i\n", __FILE__, __LINE__);
 	puts("DRAM:  ");
 	return 0;
 }
@@ -153,8 +154,12 @@ static int show_dram_config(void)
 {
 	unsigned long long size;
 
+	printf("\n%s:%i\n", __FILE__, __LINE__);
+
 #ifdef CONFIG_NR_DRAM_BANKS
 	int i;
+
+	printf("\n%s:%i\n", __FILE__, __LINE__);
 
 	debug("\nRAM Configuration:\n");
 	for (i = size = 0; i < CONFIG_NR_DRAM_BANKS; i++) {
@@ -162,6 +167,8 @@ static int show_dram_config(void)
 		debug("Bank #%d: %llx ", i,
 		      (unsigned long long)(gd->bd->bi_dram[i].start));
 #ifdef DEBUG
+		printf("\n%s:%i\n", __FILE__, __LINE__);
+
 		print_size(gd->bd->bi_dram[i].size, "\n");
 #endif
 	}
@@ -169,6 +176,8 @@ static int show_dram_config(void)
 #else
 	size = gd->ram_size;
 #endif
+
+	printf("\n%s:%i\n", __FILE__, __LINE__);
 
 	print_size(size, "");
 	board_add_ram_info(0);
@@ -179,6 +188,8 @@ static int show_dram_config(void)
 
 __weak int dram_init_banksize(void)
 {
+	printf("\n%s:%i\n", __FILE__, __LINE__);
+
 #if defined(CONFIG_NR_DRAM_BANKS) && defined(CONFIG_SYS_SDRAM_BASE)
 	gd->bd->bi_dram[0].start = CONFIG_SYS_SDRAM_BASE;
 	gd->bd->bi_dram[0].size = get_effective_memsize();

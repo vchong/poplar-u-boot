@@ -1262,6 +1262,8 @@ U_BOOT_CMD(
 #ifdef CONFIG_CMD_MEMINFO
 __weak void board_show_dram(phys_size_t size)
 {
+	printf("\n%s:%i\n", __FILE__, __LINE__);
+
 	puts("DRAM:  ");
 	print_size(size, "\n");
 }
