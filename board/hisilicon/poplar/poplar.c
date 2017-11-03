@@ -82,6 +82,7 @@ void reset_cpu(ulong addr)
 int dram_init(void)
 {
 	gd->ram_size = get_ram_size(NULL, 0x80000000);
+	printf("\n%s:%i gd->ram_size: %lu\n", __FILE__, __LINE__, gd->ram_size);
 
 	return 0;
 }
@@ -104,6 +105,7 @@ int dram_init_banksize(void)
 {
 	gd->bd->bi_dram[0].start = KERNEL_TEXT_OFFSET;
 	gd->bd->bi_dram[0].size = gd->ram_size - gd->bd->bi_dram[0].start;
+	printf("\n%s:%i\n", __FILE__, __LINE__);
 
 	return 0;
 }
